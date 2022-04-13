@@ -1,0 +1,51 @@
+1:task22:
+2:     push ebp
+3:    mov ebp, esp
+4:    sub esp, 4
+5:    pushad
+6:    
+7:    mov ebx, [ebp +16]
+8:    mov ecx, [ebp +12]
+9:    mov eax, [ebp +8]
+10:    
+11:    cmp eax, 0
+12:    je .end
+13:     cmp ecx, 0
+14:    jle .invalidECX
+15:    
+16:    jmp .over1
+17:        .invalidECX:
+18:        mov eax, 0
+19:        jmp .end
+20:    .over1:
+21:    
+22:        mov edx, ecx
+23:
+24:       mov ecx, 0
+25:                  .lop:
+26:                   
+27:                  movsx esi,word[eax+2*ecx]
+28:                  cmp ebx, esi
+29:                  je  .found
+30:        
+31:    
+32:             inc ecx
+33:              cmp ecx, edx
+34:                jne .lop
+35:    
+36:    
+37:               jmp .over
+38:               .found:
+39:                lea eax, [eax+2*ecx]
+40:                jmp .end
+41:               .over:
+42:                mov eax, 0
+43:                
+44:             .end:
+45:       mov [ebp-4], eax
+46:        
+47:    popad
+48:    mov eax, [ebp-4]
+49:    add esp, 4
+50:    pop ebp
+51:    ret
