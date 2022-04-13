@@ -23,6 +23,7 @@ sem_t *SharedMemory_sem;
 sem_t *SharedMoleculeCount_sem;
 sem_t *SharedHydrogenCount_sem;
 sem_t *SharedOxygenCount_sem;
+sem_t *WriteOut_sem;
 
 void incSharedMemory(int *shared_memory)
 {
@@ -30,6 +31,9 @@ void incSharedMemory(int *shared_memory)
     (*shared_memory)++;
     sem_post(SharedMemory_sem);
 }
+
+
+
 
 void decSharedHydrogen(int *SharedHydrogenCount)
 {
@@ -54,20 +58,26 @@ void incMoleculeCount(int *SharedMoleculeCount)
     sem_post(SharedMoleculeCount_sem);
 }
 
-void kyslik(int id, int TI, int *shared_memory, int *SharedMoleculeCount, int *SharedOxygenCount, int *SharedHydrogenCount)
+void kyslik(int id, int TI, int *shared_memory, int *SharedMoleculeCount, int *SharedOxygenCount, int *SharedHydrogenCount,FILE *fp)
 {
+     sem_wait(WriteOut_sem);
     incSharedMemory(shared_memory);
-    printf("%d: O %d: started\n", *shared_memory, id);
+    fprintf(fp,"%d: O %d: started\n", *shared_memory, id);
+    sem_post(WriteOut_sem);
     usleep(rand() % TI);
+       sem_wait(WriteOut_sem);
     incSharedMemory(shared_memory);
-    printf("%d: O %d: going to queue\n", *shared_memory, id);
+    fprintf(fp,"%d: O %d: going to queue\n", *shared_memory, id);
+      sem_post(WriteOut_sem);
     sem_wait(O_sem);
     incMoleculeCount(SharedMoleculeCount);
     sem_post(H_sem);
     sem_post(H_sem);
     if(*SharedHydrogenCount<2){
+          sem_wait(WriteOut_sem);
           incSharedMemory(shared_memory);
-            printf("%d: O %d: not enough H\n", *shared_memory, id);
+            fprintf(fp,"%d: O %d: not enough H\n", *shared_memory, id);
+               sem_post(WriteOut_sem);
         decSharedOxygen(SharedOxygenCount);
 
             exit(0);
@@ -76,21 +86,25 @@ void kyslik(int id, int TI, int *shared_memory, int *SharedMoleculeCount, int *S
     sem_wait(O_sem2);
 
      if(*SharedHydrogenCount<2){
+           sem_wait(O_sem);
            incSharedMemory(shared_memory);
-            printf("%d: O %d: not enough H\n", *shared_memory, id);
+            fprintf(fp,"%d: O %d: not enough H\n", *shared_memory, id);
+                       sem_post(WriteOut_sem);
         decSharedOxygen(SharedOxygenCount);
 
             exit(0);
     }
     incSharedMemory(shared_memory);
-
-    printf("%d: O %d: creating molecule %d\n", *shared_memory, id, *SharedMoleculeCount);
-
+  sem_wait(WriteOut_sem);
+   fprintf(fp,"%d: O %d: creating molecule %d\n", *shared_memory, id, *SharedMoleculeCount);
+    sem_post(WriteOut_sem);
     usleep(rand() % TI);
     sem_post(H_sem2);
     sem_post(H_sem2);
+      sem_wait(WriteOut_sem);
     incSharedMemory(shared_memory);
-    printf("%d: O %d: molecule %d created\n", *shared_memory, id, *SharedMoleculeCount);
+    fprintf(fp,"%d: O %d: molecule %d created\n", *shared_memory, id, *SharedMoleculeCount);
+        sem_post(WriteOut_sem);
     sem_post(O_sem);
     decSharedOxygen(SharedOxygenCount);
     if(*SharedOxygenCount==0){
@@ -103,46 +117,57 @@ void kyslik(int id, int TI, int *shared_memory, int *SharedMoleculeCount, int *S
     exit(0);
 }
 
-void vodik(int id, int TI, int *shared_memory, int *SharedMoleculeCount, int *SharedOxygenCount, int *SharedHydrogenCount)
+void vodik(int id, int TI, int *shared_memory, int *SharedMoleculeCount, int *SharedOxygenCount, int *SharedHydrogenCount,FILE *fp)
 {
+         sem_wait(WriteOut_sem);
     incSharedMemory(shared_memory);
-    printf("%d: H %d: started\n", *shared_memory, id);
+   fprintf(fp,"%d: H %d: started\n", *shared_memory, id);
+       sem_post(WriteOut_sem);
     usleep(rand() % TI);
+        sem_wait(WriteOut_sem);
     incSharedMemory(shared_memory);
-    printf("%d: H %d: going to queue\n", *shared_memory, id);
+    fprintf(fp,"%d: H %d: going to queue\n", *shared_memory, id);
+           sem_post(WriteOut_sem);
     if(*SharedHydrogenCount<2||*SharedOxygenCount<1){
+             sem_wait(WriteOut_sem);
             incSharedMemory(shared_memory);
-            printf("%d: H %d: not enough O or H\n", *shared_memory, id);
+             fprintf(fp,"%d: H %d: not enough O or H\n", *shared_memory, id);
+              sem_post(WriteOut_sem);
         decSharedHydrogen(SharedHydrogenCount);
 
             exit(0);
     }
     sem_wait(H_sem);
     if(*SharedHydrogenCount<2||*SharedOxygenCount<1){
-
+   sem_wait(WriteOut_sem);
             incSharedMemory(shared_memory);
-            printf("%d: H %d: not enough O or H\n", *shared_memory, id);
+            fprintf(fp,"%d: H %d: not enough O or H\n", *shared_memory, id);
+                 sem_post(WriteOut_sem);
         decSharedHydrogen(SharedHydrogenCount);
 
             exit(0);
     }
 
 
-
+   sem_wait(WriteOut_sem);
     incSharedMemory(shared_memory);
-    printf("%d: H %d: creating molecule %d\n", *shared_memory, id, *SharedMoleculeCount);
+    fprintf(fp,"%d: H %d: creating molecule %d\n", *shared_memory, id, *SharedMoleculeCount);
+          sem_post(WriteOut_sem);
     sem_post(O_sem2);
     sem_wait(H_sem2);
       if(*SharedHydrogenCount<2||*SharedOxygenCount<1){
+ sem_wait(WriteOut_sem);
             incSharedMemory(shared_memory);
-            printf("%d: H %d: not enough O or H\n", *shared_memory, id);
+            fprintf(fp,"%d: H %d: not enough O or H\n", *shared_memory, id);
+                  sem_post(WriteOut_sem);
         decSharedHydrogen(SharedHydrogenCount);
 
             exit(0);
     }
-
+ sem_wait(WriteOut_sem);
     incSharedMemory(shared_memory);
-    printf("%d: H %d: molecule %d created\n", *shared_memory, id, *SharedMoleculeCount);
+   fprintf(fp,"%d: H %d: molecule %d created\n", *shared_memory, id, *SharedMoleculeCount);
+             sem_post(WriteOut_sem);
     decSharedHydrogen(SharedHydrogenCount);
     if(*SharedHydrogenCount<2){
          for(int i = 0; i<=*SharedHydrogenCount;i++) {
@@ -161,6 +186,16 @@ void vodik(int id, int TI, int *shared_memory, int *SharedMoleculeCount, int *Sh
 
 int main(int argc, char **argv)
 {
+    FILE *fp;
+
+     fp = fopen("proj2.out", "w");
+     setbuf(fp,NULL);
+    if(fp == NULL) {
+        printf("file can't be opened\n");
+        exit(1);
+    }
+
+
     sem_unlink("O_sem_filee");
     sem_unlink("O_sem2_filee");
     sem_unlink("H_sem_filee");
@@ -169,7 +204,14 @@ int main(int argc, char **argv)
     sem_unlink("SharedMoleculeCount_sem");
     sem_unlink("SharedOxygenCount_sem");
     sem_unlink("SharedHydrogenCount_sem");
+    sem_unlink("WriteOut_sem");
 
+
+    if ((WriteOut_sem = sem_open("WriteOut_sem", O_CREAT, 0777, 1)) == SEM_FAILED)
+    {
+        printf("%d", errno);
+        exit(EXIT_FAILURE);
+    }
     if ((SharedMoleculeCount_sem = sem_open("SharedMoleculeCount_sem", O_CREAT, 0777, 1)) == SEM_FAILED)
     {
         printf("%d", errno);
@@ -227,7 +269,7 @@ int main(int argc, char **argv)
     {
         if (fork() == 0)
         {
-            kyslik(i + 1, atoi(argv[3]), shared_memory, SharedMoleculeCount,SharedOxygenCount,SharedHydrogenCount);
+            kyslik(i + 1, atoi(argv[3]), shared_memory, SharedMoleculeCount,SharedOxygenCount,SharedHydrogenCount, fp);
         }
     }
 
@@ -235,7 +277,7 @@ int main(int argc, char **argv)
     {
         if (fork() == 0)
         {
-            vodik(i + 1, atoi(argv[3]), shared_memory, SharedMoleculeCount,SharedOxygenCount,SharedHydrogenCount);
+            vodik(i + 1, atoi(argv[3]), shared_memory, SharedMoleculeCount,SharedOxygenCount,SharedHydrogenCount, fp);
         }
     }
 
@@ -250,7 +292,9 @@ int main(int argc, char **argv)
     sem_close(SharedMoleculeCount_sem);
       sem_close(SharedHydrogenCount_sem);
         sem_close(SharedOxygenCount_sem);
+           sem_close(WriteOut_sem);
     sem_unlink("SharedMemory_sem_filee");
+    sem_unlink("WriteOut_sem");
     sem_unlink("SharedMoleculeCount_sem");
     sem_unlink("O_sem_file");
     sem_unlink("H_sem_file");
@@ -258,4 +302,7 @@ int main(int argc, char **argv)
     sem_unlink("O_sem2_filee");
         sem_unlink("SharedOxygenCount_sem");
     sem_unlink("SharedHydrogenCount_sem");
+    fclose(fp);
+     return 0;
 }
+
