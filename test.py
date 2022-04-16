@@ -291,6 +291,12 @@ processSucess(1, 1, 100, 100)
 test("Creating one molecule (1, 2, 100, 100)")
 processSucess(1, 2, 100, 100)
 
+test("Not enough of hydrogen  (1, 2, 100, 100)")
+processSucess(2, 0, 100, 100)
+
+test("Not enough of oxygen  (1, 2, 100, 100)")
+processSucess(0, 2, 100, 100)
+
 testEnd()
 note("Test script has finnished")
 note(f"Total of {testCnt} tests were run, {failedCnt} failed")

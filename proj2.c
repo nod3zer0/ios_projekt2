@@ -1,3 +1,8 @@
+/**
+ * @file proj2
+ * @author RENE CESKA xceska06
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/types.h>
@@ -119,6 +124,18 @@ void Oxygen(int id, int TI, int TB, int *SharedWriteoutCount, int *SharedMolecul
     incSharedMemory(SharedWriteoutCount);
     fprintf(fp, "%d: O %d: going to queue\n", *SharedWriteoutCount, id);
     sem_post(WriteOut_sem);
+
+    // if there is not enough hydrogens, it writes message and ends
+    if (*SharedHydrogenCount < 2)
+    {
+        sem_wait(WriteOut_sem);
+        incSharedMemory(SharedWriteoutCount);
+        fprintf(fp, "%d: O %d: not enough H\n", *SharedWriteoutCount, id);
+        sem_post(WriteOut_sem);
+        decSharedOxygen(SharedOxygenCount);
+
+        exit(0);
+    }
 
     // enters queue (waits at semaphore)
     sem_wait(O_sem);
@@ -252,18 +269,6 @@ void Hydrogen(int id, int TI, int *shared_memory, int *SharedMoleculeCount, int 
     sem_post(O_sem2);
     // waits until hydrogen says that molecule is created
     sem_wait(H_sem2);
-    // if there is not enough hydrogens or oxygens, it writes message and ends
-    if (*SharedHydrogenCount < 2 || *SharedOxygenCount < 1)
-    {
-        sem_wait(WriteOut_sem);
-        incSharedMemory(shared_memory);
-        fprintf(fp, "%d: H %d: not enough O or H\n", *shared_memory, id);
-        sem_post(WriteOut_sem);
-        decSharedHydrogen(SharedHydrogenCount);
-
-        exit(0);
-    }
-
     // writes that molecule is finished
     sem_wait(WriteOut_sem);
     incSharedMemory(shared_memory);
@@ -339,9 +344,9 @@ int main(int argc, char **argv)
         return 1;
     }
 
-    //converts miliseconds to microseconds
-    TI = 1000*TI;
-    TB = 1000*TB;
+    // converts miliseconds to microseconds
+    TI = 1000 * TI;
+    TB = 1000 * TB;
 
     // tries to create output file
     fp = fopen("proj2.out", "w");
@@ -353,15 +358,15 @@ int main(int argc, char **argv)
     }
 
     // unlinks all semaphores who may be there from previous runs
-    sem_unlink("O_sem_filee");
-    sem_unlink("O_sem2_filee");
-    sem_unlink("H_sem_filee");
-    sem_unlink("H_sem2_filee");
     sem_unlink("SharedMemory_sem_filee");
+    sem_unlink("WriteOut_sem");
     sem_unlink("SharedMoleculeCount_sem");
+    sem_unlink("O_sem_file");
+    sem_unlink("H_sem_file");
+    sem_unlink("H_sem2_file");
+    sem_unlink("O_sem2_file");
     sem_unlink("SharedOxygenCount_sem");
     sem_unlink("SharedHydrogenCount_sem");
-    sem_unlink("WriteOut_sem");
 
     // opens all needed sempahores
     if ((WriteOut_sem = sem_open("WriteOut_sem", O_CREAT, 0777, 1)) == SEM_FAILED)
@@ -384,23 +389,23 @@ int main(int argc, char **argv)
         printf("%d", errno);
         return 1;
     }
-    if ((O_sem = sem_open("O_sem_filee", O_CREAT, 0777, 1)) == SEM_FAILED)
+    if ((O_sem = sem_open("O_sem_file", O_CREAT, 0777, 1)) == SEM_FAILED)
     {
         printf("%d", errno);
         return 1;
     }
-    if ((O_sem2 = sem_open("O_sem2_filee", O_CREAT, 0777, 0)) == SEM_FAILED)
+    if ((O_sem2 = sem_open("O_sem2_file", O_CREAT, 0777, 0)) == SEM_FAILED)
     {
         printf("%d", errno);
         return 1;
     }
 
-    if ((H_sem = sem_open("H_sem_filee", O_CREAT, 0660, 0)) == SEM_FAILED)
+    if ((H_sem = sem_open("H_sem_file", O_CREAT, 0660, 0)) == SEM_FAILED)
     {
         printf("%d", errno);
         return 1;
     }
-    if ((H_sem2 = sem_open("H_sem2_filee", O_CREAT, 0660, 0)) == SEM_FAILED)
+    if ((H_sem2 = sem_open("H_sem2_file", O_CREAT, 0660, 0)) == SEM_FAILED)
     {
         printf("%d", errno);
         return 1;
@@ -463,7 +468,7 @@ int main(int argc, char **argv)
     sem_unlink("O_sem_file");
     sem_unlink("H_sem_file");
     sem_unlink("H_sem2_file");
-    sem_unlink("O_sem2_filee");
+    sem_unlink("O_sem2_file");
     sem_unlink("SharedOxygenCount_sem");
     sem_unlink("SharedHydrogenCount_sem");
     munmap(shared_memory, 4);
