@@ -1,0 +1,190 @@
+[ T ] Test for: Stress test (100, 100, 100, 100)
+[ERR] Wrong id of line, expected 263
+[ERR] Wrong amount of molecules created: found 6, expected 50
+[ERR] Oxygen 6 didn't attempted to create molecule
+[ERR] Oxygen 7 didn't attempted to create molecule
+[ERR] Oxygen 8 didn't attempted to create molecule
+[ERR] Oxygen 9 didn't attempted to create molecule
+[ERR] Oxygen 10 didn't attempted to create molecule
+[ERR] Oxygen 11 didn't attempted to create molecule
+[ERR] Oxygen 12 didn't attempted to create molecule
+[ERR] Oxygen 13 didn't attempted to create molecule
+[ERR] Oxygen 14 didn't attempted to create molecule
+[ERR] Oxygen 15 didn't attempted to create molecule
+[ERR] Oxygen 16 didn't attempted to create molecule
+[ERR] Oxygen 17 didn't attempted to create molecule
+[ERR] Oxygen 18 didn't attempted to create molecule
+[ERR] Oxygen 19 didn't attempted to create molecule
+[ERR] Oxygen 20 didn't attempted to create molecule
+[ERR] Oxygen 21 didn't attempted to create molecule
+[ERR] Oxygen 22 didn't attempted to create molecule
+[ERR] Oxygen 23 didn't attempted to create molecule
+[ERR] Oxygen 24 didn't attempted to create molecule
+[ERR] Oxygen 25 didn't attempted to create molecule
+[ERR] Oxygen 26 didn't attempted to create molecule
+[ERR] Oxygen 27 didn't attempted to create molecule
+[ERR] Oxygen 28 didn't attempted to create molecule
+[ERR] Oxygen 29 didn't attempted to create molecule
+[ERR] Oxygen 30 didn't attempted to create molecule
+[ERR] Oxygen 31 didn't attempted to create molecule
+[ERR] Oxygen 32 didn't attempted to create molecule
+[ERR] Oxygen 33 didn't attempted to create molecule
+[ERR] Oxygen 34 didn't attempted to create molecule
+[ERR] Oxygen 35 didn't attempted to create molecule
+[ERR] Oxygen 36 didn't attempted to create molecule
+[ERR] Oxygen 37 didn't attempted to create molecule
+[ERR] Oxygen 38 didn't attempted to create molecule
+[ERR] Oxygen 39 didn't attempted to create molecule
+[ERR] Oxygen 40 didn't attempted to create molecule
+[ERR] Oxygen 41 didn't attempted to create molecule
+[ERR] Oxygen 42 didn't attempted to create molecule
+[ERR] Oxygen 43 didn't attempted to create molecule
+[ERR] Oxygen 44 didn't attempted to create molecule
+[ERR] Oxygen 45 didn't attempted to create molecule
+[ERR] Oxygen 46 didn't attempted to create molecule
+[ERR] Oxygen 47 didn't attempted to create molecule
+[ERR] Oxygen 48 didn't attempted to create molecule
+[ERR] Oxygen 49 didn't attempted to create molecule
+[ERR] Oxygen 50 didn't attempted to create molecule
+[ERR] Oxygen 51 didn't attempted to create molecule
+[ERR] Oxygen 52 didn't attempted to create molecule
+[ERR] Oxygen 53 didn't attempted to create molecule
+[ERR] Oxygen 54 didn't attempted to create molecule
+[ERR] Oxygen 55 didn't attempted to create molecule
+[ERR] Oxygen 56 didn't attempted to create molecule
+[ERR] Oxygen 57 didn't attempted to create molecule
+[ERR] Oxygen 58 didn't attempted to create molecule
+[ERR] Oxygen 59 didn't attempted to create molecule
+[ERR] Oxygen 60 didn't attempted to create molecule
+[ERR] Oxygen 61 didn't attempted to create molecule
+[ERR] Oxygen 62 didn't attempted to create molecule
+[ERR] Oxygen 63 didn't attempted to create molecule
+[ERR] Oxygen 64 didn't attempted to create molecule
+[ERR] Oxygen 65 didn't attempted to create molecule
+[ERR] Oxygen 66 didn't attempted to create molecule
+[ERR] Oxygen 67 didn't attempted to create molecule
+[ERR] Oxygen 68 didn't attempted to create molecule
+[ERR] Oxygen 69 didn't attempted to create molecule
+[ERR] Oxygen 70 didn't attempted to create molecule
+[ERR] Oxygen 71 didn't attempted to create molecule
+[ERR] Oxygen 72 didn't attempted to create molecule
+[ERR] Oxygen 73 didn't attempted to create molecule
+[ERR] Oxygen 74 didn't attempted to create molecule
+[ERR] Oxygen 75 didn't attempted to create molecule
+[ERR] Oxygen 76 didn't attempted to create molecule
+[ERR] Oxygen 77 didn't attempted to create molecule
+[ERR] Oxygen 78 didn't attempted to create molecule
+[ERR] Oxygen 79 didn't attempted to create molecule
+[ERR] Oxygen 80 didn't attempted to create molecule
+[ERR] Oxygen 81 didn't attempted to create molecule
+[ERR] Oxygen 82 didn't attempted to create molecule
+[ERR] Oxygen 83 didn't attempted to create molecule
+[ERR] Oxygen 84 didn't attempted to create molecule
+[ERR] Oxygen 85 didn't attempted to create molecule
+[ERR] Oxygen 86 didn't attempted to create molecule
+[ERR] Oxygen 87 didn't attempted to create molecule
+[ERR] Oxygen 88 didn't attempted to create molecule
+[ERR] Oxygen 89 didn't attempted to create molecule
+[ERR] Oxygen 90 didn't attempted to create molecule
+[ERR] Oxygen 91 didn't attempted to create molecule
+[ERR] Oxygen 92 didn't attempted to create molecule
+[ERR] Oxygen 93 didn't attempted to create molecule
+[ERR] Oxygen 94 didn't attempted to create molecule
+[ERR] Oxygen 95 didn't attempted to create molecule
+[ERR] Oxygen 96 didn't attempted to create molecule
+[ERR] Oxygen 97 didn't attempted to create molecule
+[ERR] Oxygen 98 didn't attempted to create molecule
+[ERR] Oxygen 99 didn't attempted to create molecule
+[ERR] Oxygen 100 didn't attempted to create molecule
+[ERR] Hydrogen 11 didn't finnished forming of molecule
+[ERR] Hydrogen 12 didn't finnished forming of molecule
+[ERR] Hydrogen 13 didn't attempted to create molecule
+[ERR] Hydrogen 14 didn't attempted to create molecule
+[ERR] Hydrogen 15 didn't went to queue
+[ERR] Hydrogen 16 didn't went to queue
+[ERR] Hydrogen 17 wasn't started
+[ERR] Hydrogen 18 wasn't started
+[ERR] Hydrogen 19 wasn't started
+[ERR] Hydrogen 20 wasn't started
+[ERR] Hydrogen 21 wasn't started
+[ERR] Hydrogen 22 wasn't started
+[ERR] Hydrogen 23 wasn't started
+[ERR] Hydrogen 24 wasn't started
+[ERR] Hydrogen 25 wasn't started
+[ERR] Hydrogen 26 wasn't started
+[ERR] Hydrogen 27 wasn't started
+[ERR] Hydrogen 28 wasn't started
+[ERR] Hydrogen 29 wasn't started
+[ERR] Hydrogen 30 wasn't started
+[ERR] Hydrogen 31 wasn't started
+[ERR] Hydrogen 32 wasn't started
+[ERR] Hydrogen 33 wasn't started
+[ERR] Hydrogen 34 wasn't started
+[ERR] Hydrogen 35 wasn't started
+[ERR] Hydrogen 36 wasn't started
+[ERR] Hydrogen 37 wasn't started
+[ERR] Hydrogen 38 wasn't started
+[ERR] Hydrogen 39 wasn't started
+[ERR] Hydrogen 40 wasn't started
+[ERR] Hydrogen 41 wasn't started
+[ERR] Hydrogen 42 wasn't started
+[ERR] Hydrogen 43 wasn't started
+[ERR] Hydrogen 44 wasn't started
+[ERR] Hydrogen 45 wasn't started
+[ERR] Hydrogen 46 wasn't started
+[ERR] Hydrogen 47 wasn't started
+[ERR] Hydrogen 48 wasn't started
+[ERR] Hydrogen 49 wasn't started
+[ERR] Hydrogen 50 wasn't started
+[ERR] Hydrogen 51 wasn't started
+[ERR] Hydrogen 52 wasn't started
+[ERR] Hydrogen 53 wasn't started
+[ERR] Hydrogen 54 wasn't started
+[ERR] Hydrogen 55 wasn't started
+[ERR] Hydrogen 56 wasn't started
+[ERR] Hydrogen 57 wasn't started
+[ERR] Hydrogen 58 wasn't started
+[ERR] Hydrogen 59 wasn't started
+[ERR] Hydrogen 60 wasn't started
+[ERR] Hydrogen 61 wasn't started
+[ERR] Hydrogen 62 wasn't started
+[ERR] Hydrogen 63 wasn't started
+[ERR] Hydrogen 64 wasn't started
+[ERR] Hydrogen 65 wasn't started
+[ERR] Hydrogen 66 wasn't started
+[ERR] Hydrogen 67 wasn't started
+[ERR] Hydrogen 68 wasn't started
+[ERR] Hydrogen 69 wasn't started
+[ERR] Hydrogen 70 wasn't started
+[ERR] Hydrogen 71 wasn't started
+[ERR] Hydrogen 72 wasn't started
+[ERR] Hydrogen 73 wasn't started
+[ERR] Hydrogen 74 wasn't started
+[ERR] Hydrogen 75 wasn't started
+[ERR] Hydrogen 76 wasn't started
+[ERR] Hydrogen 77 wasn't started
+[ERR] Hydrogen 78 wasn't started
+[ERR] Hydrogen 79 wasn't started
+[ERR] Hydrogen 80 wasn't started
+[ERR] Hydrogen 81 wasn't started
+[ERR] Hydrogen 82 wasn't started
+[ERR] Hydrogen 83 wasn't started
+[ERR] Hydrogen 84 wasn't started
+[ERR] Hydrogen 85 wasn't started
+[ERR] Hydrogen 86 wasn't started
+[ERR] Hydrogen 87 wasn't started
+[ERR] Hydrogen 88 wasn't started
+[ERR] Hydrogen 89 wasn't started
+[ERR] Hydrogen 90 wasn't started
+[ERR] Hydrogen 91 wasn't started
+[ERR] Hydrogen 92 wasn't started
+[ERR] Hydrogen 93 wasn't started
+[ERR] Hydrogen 94 wasn't started
+[ERR] Hydrogen 95 wasn't started
+[ERR] Hydrogen 96 wasn't started
+[ERR] Hydrogen 97 wasn't started
+[ERR] Hydrogen 98 wasn't started
+[ERR] Hydrogen 99 wasn't started
+[ERR] Hydrogen 100 wasn't started
+[ERR] Sleeps should be in miliseconds, but found some in microseconds
+[ERR] Test failed

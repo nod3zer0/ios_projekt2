@@ -6,17 +6,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/types.h>
-#include <unistd.h>
 #include <sys/wait.h>
+#include <unistd.h>
 #include <semaphore.h>
 #include <sys/mman.h>
-#include <time.h>
 #include <sys/stat.h>
+#include <time.h>
 #include <sys/shm.h>
 #include <sys/ipc.h>
 #include <fcntl.h>
-#include <limits.h>
 #include <errno.h>
+#include <limits.h>
 #include <string.h>
 #include <stdbool.h>
 
@@ -109,7 +109,9 @@ void incMoleculeCount(int *SharedMoleculeCount)
  */
 void Oxygen(int id, int TI, int TB, int *SharedWriteoutCount, int *SharedMoleculeCount, int *SharedOxygenCount, int *SharedHydrogenCount, FILE *fp)
 {
-
+    // inicializes random number generator with time as seed
+    time_t t;
+    srand((unsigned)time(&t)^ getpid());
     // safely increses SharedWriteoutCount and writes to output file
     sem_wait(WriteOut_sem);
     incSharedMemory(SharedWriteoutCount);
@@ -139,6 +141,18 @@ void Oxygen(int id, int TI, int TB, int *SharedWriteoutCount, int *SharedMolecul
 
     // enters queue (waits at semaphore)
     sem_wait(O_sem);
+
+      // if there is not enough hydrogens, it writes message and ends
+    if (*SharedHydrogenCount < 2)
+    {
+        sem_wait(WriteOut_sem);
+        incSharedMemory(SharedWriteoutCount);
+        fprintf(fp, "%d: O %d: not enough H\n", *SharedWriteoutCount, id);
+        sem_post(WriteOut_sem);
+        decSharedOxygen(SharedOxygenCount);
+
+        exit(0);
+    }
 
     incMoleculeCount(SharedMoleculeCount);
 
@@ -173,10 +187,11 @@ void Oxygen(int id, int TI, int TB, int *SharedWriteoutCount, int *SharedMolecul
         exit(0);
     }
 
-    incSharedMemory(SharedWriteoutCount);
+
 
     // starts creating molecule
     sem_wait(WriteOut_sem);
+    incSharedMemory(SharedWriteoutCount);
     fprintf(fp, "%d: O %d: creating molecule %d\n", *SharedWriteoutCount, id, *SharedMoleculeCount);
     sem_post(WriteOut_sem);
     usleep(rand() % TB);
@@ -190,6 +205,10 @@ void Oxygen(int id, int TI, int TB, int *SharedWriteoutCount, int *SharedMolecul
     fprintf(fp, "%d: O %d: molecule %d created\n", *SharedWriteoutCount, id, *SharedMoleculeCount);
     sem_post(WriteOut_sem);
 
+
+     // waits until 2 hydrogens are finished
+    sem_wait(O_sem2);
+    sem_wait(O_sem2);
     // lets next oxygen out from queu
     sem_post(O_sem);
 
@@ -220,6 +239,9 @@ void Oxygen(int id, int TI, int TB, int *SharedWriteoutCount, int *SharedMolecul
  */
 void Hydrogen(int id, int TI, int *shared_memory, int *SharedMoleculeCount, int *SharedOxygenCount, int *SharedHydrogenCount, FILE *fp)
 {
+    // inicializes random number generator with time as seed
+    time_t t;
+    srand((unsigned)time(&t)^ getpid());
     // safely increses SharedWriteoutCount and writes to output file
     sem_wait(WriteOut_sem);
     incSharedMemory(shared_memory);
@@ -276,6 +298,9 @@ void Hydrogen(int id, int TI, int *shared_memory, int *SharedMoleculeCount, int 
     sem_post(WriteOut_sem);
 
     decSharedHydrogen(SharedHydrogenCount);
+
+    //lets oxygen go
+    sem_post(O_sem2);
     // if there is not enought hydrogens, it lets all hydrogens and oxygens free from queue
     if (*SharedHydrogenCount < 2)
     {
@@ -428,7 +453,7 @@ int main(int argc, char **argv)
 
     // inicializes random number generator with time as seed
     time_t t;
-    srand((unsigned)time(&t));
+    srand((unsigned)time(&t)^ getpid());
 
     // creates oxygen child proceses
     for (int i = 0; i < NO; i++)
