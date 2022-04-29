@@ -24,7 +24,6 @@ sem_t *SharedHydrogenCount_sem;
 sem_t *SharedOxygenCount_sem;
 sem_t *WriteOut_sem;
 
-
 /**
  * @brief writes to file safely
  *
@@ -126,6 +125,13 @@ void checkForHydrogenRemoveOxygen(int *SharedHydrogenCount, FILE *fp, int *Share
 {
     if (*SharedHydrogenCount < 2)
     {
+        for (int i = 0; i <= *SharedHydrogenCount; i++)
+        {
+            sem_post(H_sem);
+            sem_post(H_sem2);
+            sem_post(H_sem);
+            sem_post(H_sem2);
+        }
         write_out(SharedWriteoutCount, fp, "%d: O %d: not enough H\n", *SharedWriteoutCount, id);
         decSharedOxygen(SharedOxygenCount);
 
@@ -146,9 +152,26 @@ void checkForOxygenAndHydrogenRemoveHydrogen(int *SharedHydrogenCount, FILE *fp,
 {
     if (*SharedHydrogenCount < 2 || *SharedOxygenCount < 1)
     {
+        if (*SharedHydrogenCount < 2)
+        {
+            for (int i = 0; i <= *SharedHydrogenCount; i++)
+            {
+                sem_post(H_sem);
+                sem_post(H_sem2);
+                sem_post(H_sem);
+                sem_post(H_sem2);
+            }
+            for (int i = 0; i <= *SharedOxygenCount; i++)
+            {
+                sem_post(O_sem);
+                sem_post(O_sem2);
+                sem_post(O_sem);
+                sem_post(O_sem2);
+            }
+        }
+
         write_out(SharedWriteoutCount, fp, "%d: H %d: not enough O or H\n", *SharedWriteoutCount, id);
         decSharedHydrogen(SharedHydrogenCount);
-
         exit(0);
     }
 }
@@ -174,7 +197,14 @@ void Oxygen(int id, int TI, int TB, int *SharedWriteoutCount, int *SharedMolecul
     write_out(SharedWriteoutCount, fp, "%d: O %d: started\n", *SharedWriteoutCount, id);
 
     // waits for random time in intervall <0,TI>
-    usleep(rand() % TI);
+    if (TI != 0)
+    {
+        usleep((rand() % TI)*1000);
+    }
+    else
+    {
+        usleep(0);
+    }
 
     // safely increses SharedWriteoutCount and writes to output file
     write_out(SharedWriteoutCount, fp, "%d: O %d: going to queue\n", *SharedWriteoutCount, id);
@@ -205,7 +235,14 @@ void Oxygen(int id, int TI, int TB, int *SharedWriteoutCount, int *SharedMolecul
 
     // starts creating molecule
     write_out(SharedWriteoutCount, fp, "%d: O %d: creating molecule %d\n", *SharedWriteoutCount, id, *SharedMoleculeCount);
-    usleep(rand() % TB);
+    if (TI != 0)
+    {
+        usleep((rand() % TB)*1000);
+    }
+    else
+    {
+        usleep(0);
+    }
     // when finished lets hydrogens know that molecule is finished
     sem_post(H_sem2);
     sem_post(H_sem2);
@@ -225,6 +262,8 @@ void Oxygen(int id, int TI, int TB, int *SharedWriteoutCount, int *SharedMolecul
     {
         for (int i = 0; i <= *SharedHydrogenCount; i++)
         {
+            sem_post(H_sem);
+            sem_post(H_sem2);
             sem_post(H_sem);
             sem_post(H_sem2);
         }
@@ -251,7 +290,14 @@ void Hydrogen(int id, int TI, int *SharedWriteoutCount, int *SharedMoleculeCount
     // safely increses SharedWriteoutCount and writes to output file
     write_out(SharedWriteoutCount, fp, "%d: H %d: started\n", *SharedWriteoutCount, id);
     // waits for random time in intervall <0,TI>
-    usleep(rand() % TI);
+    if (TI != 0)
+    {
+        usleep((rand() % TI)*1000);
+    }
+    else
+    {
+        usleep(0);
+    }
 
     // safely increses SharedWriteoutCount and writes to output file
     write_out(SharedWriteoutCount, fp, "%d: H %d: going to queue\n", *SharedWriteoutCount, id);
@@ -284,9 +330,13 @@ void Hydrogen(int id, int TI, int *SharedWriteoutCount, int *SharedMoleculeCount
         {
             sem_post(H_sem);
             sem_post(H_sem2);
+            sem_post(H_sem);
+            sem_post(H_sem2);
         }
         for (int i = 0; i <= *SharedOxygenCount; i++)
         {
+            sem_post(O_sem);
+            sem_post(O_sem2);
             sem_post(O_sem);
             sem_post(O_sem2);
         }
@@ -361,6 +411,11 @@ int main(int argc, char **argv)
         fprintf(stderr, "No negative numbers aloved in any argument\n");
         return 1;
     }
+     if (NH == 0 && NO == 0)
+    {
+        fprintf(stderr, "No atoms inputed\n");
+        return 1;
+    }
     if (TB > 1000 || TI > 1000)
     {
         fprintf(stderr, "TB or TI have to be less or equal to 1000");
@@ -368,8 +423,8 @@ int main(int argc, char **argv)
     }
 
     // converts miliseconds to microseconds
-    TI = 1000 * TI;
-    TB = 1000 * TB;
+    TI =  TI;
+    TB =  TB;
 
     // tries to create output file
     fp = fopen("proj2.out", "w");
@@ -411,24 +466,39 @@ int main(int argc, char **argv)
     // creates oxygen child proceses
     for (int i = 0; i < NO; i++)
     {
-        if (fork() == 0)
+        int pid = fork();
+        if (pid == 0)
         {
             Oxygen(i + 1, TI, TB, shared_memory, SharedMoleculeCount, SharedOxygenCount, SharedHydrogenCount, fp);
+        }
+        else if (pid < 0)
+        {
+            decSharedOxygen(SharedOxygenCount);
+            fprintf(stderr, "Fork failed, exiting main proces, waiting for alredy created atoms to finish.\n");
+            break;
         }
     }
     // creates hydrogen child proceses
     for (int i = 0; i < NH; i++)
     {
-        if (fork() == 0)
+        int pid = fork();
+        if (pid == 0)
         {
             Hydrogen(i + 1, TI, shared_memory, SharedMoleculeCount, SharedOxygenCount, SharedHydrogenCount, fp);
+        }
+        else if (pid < 0)
+        {
+            decSharedHydrogen(SharedHydrogenCount);
+            fprintf(stderr, "Fork failed, exiting main proces, waiting for alredy created atoms to finish.\n");
+            break;
         }
     }
 
     int status = 0;
     pid_t pid;
     // parrent waits for all his children to die before dying himself
-    while ((pid = wait(&status)) > 0);
+    while ((pid = wait(&status)) > 0)
+        ;
     // cleans and closes all files,semaphores and shared varriables
     cleanSemaphores();
     munmap(shared_memory, 4);
